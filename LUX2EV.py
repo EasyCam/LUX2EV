@@ -1,8 +1,8 @@
 from PyQt6.QtCore import QSize
-from PyQt6.QtWidgets import QApplication, QDialog, QGridLayout, QLabel, QLineEdit, QPushButton, QTableWidget, QTableWidgetItem
+from PyQt6.QtWidgets import QApplication, QComboBox, QDialog, QGridLayout, QLabel, QLineEdit, QPushButton, QTableWidget, QTableWidgetItem
 import math
 
-version = '2023.12.15.001'
+version = '2023.12.15.002'
 
 class ExposureCalculator(QDialog):
     
@@ -11,10 +11,15 @@ class ExposureCalculator(QDialog):
         self.setWindowTitle("LUX2EV")
         self.resize(QSize(320, 720))
         # 创建构件
-        self.lux_label = QLabel("LUX:")
+        self.lux_label = QLabel("LUX")
         self.lux_edit = QLineEdit()
-        self.iso_label = QLabel("ISO:")
-        self.iso_edit = QLineEdit()
+        self.iso_label = QLabel("ISO")
+        iso_list = [50,64,100,125,160,200,250,320,400,500,640,800,1000,1250,1600,2000,2500,3200,4000,5000,6400,8000,10000,12500,16000,20000,25000,32000,4000,5000,6400,8000,10000,12800,16000,20000,25600,51200,102400]
+        self.iso_select = QComboBox()
+        self.iso_select.addItems([str(iso) for iso in iso_list])
+        self.iso_select.setCurrentIndex(0)
+        self.iso_label.setBuddy(self.iso_select)
+
         self.ev_label = QLabel("EV:")
         self.ev_value = QLabel()
         self.calculate_button = QPushButton("Calc")
@@ -27,7 +32,8 @@ class ExposureCalculator(QDialog):
         layout.addWidget(self.lux_label, 0, 0)
         layout.addWidget(self.lux_edit, 0, 1)
         layout.addWidget(self.iso_label, 1, 0)
-        layout.addWidget(self.iso_edit, 1, 1)
+        layout.addWidget(self.iso_label, 1, 0)
+        layout.addWidget(self.iso_select, 1, 1)
         layout.addWidget(self.calculate_button, 2, 0)
         layout.addWidget(self.ev_label, 3, 0)
         layout.addWidget(self.ev_value, 3, 1)
@@ -45,7 +51,7 @@ class ExposureCalculator(QDialog):
     def calculate_ev(self):
         try:
             lux = float(self.lux_edit.text())
-            iso = float(self.iso_edit.text())
+            iso = float(self.iso_select.currentText())
             ev = 2+math.log2(lux /10)
             ev = round(ev * 10) / 10
             self.ev_value.setText(str(ev))
@@ -76,7 +82,7 @@ class ExposureCalculator(QDialog):
         elif shutter_speed > 30:
             return str(int(shutter_speed))
         else:
-            return str(1/self.nearest_power_of_two(1/shutter_speed))+('too small')
+            return ('Overexposure Warning')
 
 
 
