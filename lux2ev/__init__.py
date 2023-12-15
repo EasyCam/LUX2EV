@@ -5,13 +5,8 @@ import sys
 from PyQt6.QtCore import QSize,QTranslator
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QComboBox, QMainWindow, QDialog,QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, QLineEdit, QPushButton, QTableWidget, QTableWidgetItem
-# 获取当前文件的绝对路径
-file_path = os.path.abspath(__file__)
-# 获取当前文件所在目录的路径
-dir_path = os.path.dirname(file_path)
-# 更改当前工作目录
-os.chdir(dir_path)
-version = '2023.12.15.003'
+
+version = '2023.12.15.3'
 class ExposureCalculator(QDialog):
     
     def __init__(self, parent=None):
