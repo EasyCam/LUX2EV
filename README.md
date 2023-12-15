@@ -11,18 +11,18 @@ A very easy-to-use small software that uses the lux value measured by the illumi
 ## Installation
 
 ```Bash
-git clone https://github.com/EasyCam/LUX2EV/
-cd LUX2EV/lux2ev
 pip install pyqt6
-python __init__.py
+pip install lux2ev
+python -c "import lux2ev;lux2ev.main()"
 ```
 
 OR 
 
 ```Bash
+git clone https://github.com/EasyCam/LUX2EV/
+cd LUX2EV/lux2ev
 pip install pyqt6
-pip install lux2ev
-python -c "import lux2ev;lux2ev.main()"
+python __init__.py
 ```
 
 ## Usage
