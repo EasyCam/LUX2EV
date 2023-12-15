@@ -1,14 +1,15 @@
-from PyQt6.QtCore import QSize
-from PyQt6.QtWidgets import QApplication, QComboBox, QDialog, QGridLayout, QLabel, QLineEdit, QPushButton, QTableWidget, QTableWidgetItem
 import math
+import re
+import sys
+from PyQt6.QtCore import QSize,QTranslator
+from PyQt6.QtWidgets import QApplication, QComboBox, QMainWindow, QDialog, QGridLayout, QLabel, QLineEdit, QPushButton, QTableWidget, QTableWidgetItem
 
 version = '2023.12.15.002'
-
 class ExposureCalculator(QDialog):
     
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("LUX2EV")
+        self.setWindowTitle("LUX2EV   " + version)
         self.resize(QSize(320, 720))
         # 创建构件
         self.lux_label = QLabel("LUX")
@@ -84,15 +85,19 @@ class ExposureCalculator(QDialog):
         else:
             return ('Overexposure Warning')
 
-
-
     def nearest_power_of_two(self,num):
         power = math.ceil(math.log(num, 2))
         return int(math.pow(2, power))
         
 # Run The Code
-if __name__ == '__main__':
-    app = QApplication([])
-    window = ExposureCalculator()
-    window.show()
+def main():
+
+    app = QApplication(sys.argv)
+    main_window = ExposureCalculator()
+    main_window.show()
     app.exec()
+
+
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw?|\.exe)?$', '', sys.argv[0])
+    sys.exit(main())
