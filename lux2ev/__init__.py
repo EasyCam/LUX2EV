@@ -1,15 +1,23 @@
 import math
+import os
 import re
 import sys
 from PyQt6.QtCore import QSize,QTranslator
-from PyQt6.QtWidgets import QApplication, QComboBox, QMainWindow, QDialog, QGridLayout, QLabel, QLineEdit, QPushButton, QTableWidget, QTableWidgetItem
-
-version = '2023.12.15.002'
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QApplication, QComboBox, QMainWindow, QDialog,QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, QLineEdit, QPushButton, QTableWidget, QTableWidgetItem
+# 获取当前文件的绝对路径
+file_path = os.path.abspath(__file__)
+# 获取当前文件所在目录的路径
+dir_path = os.path.dirname(file_path)
+# 更改当前工作目录
+os.chdir(dir_path)
+version = '2023.12.15.003'
 class ExposureCalculator(QDialog):
     
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("LUX2EV   " + version)
+        self.setWindowTitle("LUX2EV\t\t\t" + version)
+        self.setWindowIcon(QIcon('lux2ev.ico'))
         self.resize(QSize(320, 720))
         # 创建构件
         self.lux_label = QLabel("LUX")
@@ -20,26 +28,43 @@ class ExposureCalculator(QDialog):
         self.iso_select.addItems([str(iso) for iso in iso_list])
         self.iso_select.setCurrentIndex(0)
         self.iso_label.setBuddy(self.iso_select)
+        self.iso_select.currentIndexChanged.connect(self.calculate_ev)
+        
+        self.ev_label = QLabel("EV")
+        self.ev_label_value = QLabel("  ")
+        self.ev_label_left = QLabel("Adjust")
+        self.ev_label_right = QLabel("  ")
+        ev_srt_list=['-5.0','-4.67','-4.5','-4.33','-4.0','-3.67','-3.5','-3.33','-3.0','-2.67','-2.5','-2.33','-2.0','-1.67','-1.5','-1.33','-1.0','-0.67','-0.5','-0.33','+0.0','+0.33','+0.5','+0.67','+1.0','+1.33','+1.5','+1.67','+2.0','+2.33','+2.5','+2.67','+3.0','+3.33','+3.5','+3.67','+4.0','+4.33','+4.5','+4.67','+5.0']
+        self.ev_select = QComboBox()
+        self.ev_select.addItems([str(iso) for iso in ev_srt_list])
+        self.ev_select.setCurrentIndex(20)
+        self.ev_label_left.setBuddy(self.ev_select)
+        self.ev_select.currentIndexChanged.connect(self.calculate_ev)
 
-        self.ev_label = QLabel("EV:")
-        self.ev_value = QLabel()
         self.calculate_button = QPushButton("Calc")
         self.exposure_table = QTableWidget()
         self.exposure_table.setColumnCount(2)
-        self.exposure_table.setHorizontalHeaderLabels(["F (Aperture)", "S (Shutter Speed)"])
-        
-        # 创建布局
+        self.exposure_table.setHorizontalHeaderLabels(["Aperture", "Shutter Speed"])
+
+        # Create layout
+        horizontal_layout_box = QHBoxLayout() 
+        vertical_layout_box = QVBoxLayout()
         layout = QGridLayout()
-        layout.addWidget(self.lux_label, 0, 0)
-        layout.addWidget(self.lux_edit, 0, 1)
-        layout.addWidget(self.iso_label, 1, 0)
-        layout.addWidget(self.iso_label, 1, 0)
-        layout.addWidget(self.iso_select, 1, 1)
-        layout.addWidget(self.calculate_button, 2, 0)
-        layout.addWidget(self.ev_label, 3, 0)
-        layout.addWidget(self.ev_value, 3, 1)
-        layout.addWidget(self.exposure_table, 4, 0, 1, 2)
-        self.setLayout(layout)
+        horizontal_layout_box.addWidget(self.lux_label)
+        horizontal_layout_box.addWidget(self.lux_edit)
+        horizontal_layout_box.addWidget(self.iso_label)
+        horizontal_layout_box.addWidget(self.iso_select)
+        horizontal_layout_box.addWidget(self.ev_label)
+        horizontal_layout_box.addWidget(self.ev_label_value)
+        horizontal_layout_box.addWidget(self.ev_label_left)
+        horizontal_layout_box.addWidget(self.ev_select)
+        horizontal_layout_box.addWidget(self.ev_label_right)
+        horizontal_layout_box.addWidget(self.calculate_button)
+        vertical_layout_box.addLayout(horizontal_layout_box)
+        vertical_layout_box.addWidget(self.exposure_table)
+
+
+        self.setLayout(vertical_layout_box)
         
         # 链接事件
         self.calculate_button.clicked.connect(self.calculate_ev)
@@ -62,9 +87,11 @@ class ExposureCalculator(QDialog):
             # 保留两位小数
             ev = round(ev * 10) / 10
             # 将计算结果更新到文本框中
-            self.ev_value.setText(str(ev))
+            self.ev_label_value.setText(str(ev))
+            used_ev = ev + float(self.ev_select.currentText()) 
+            self.ev_label_right.setText(' = '+str(used_ev))
             # 调用 populate_table 函数，传入 ev 和 iso 值，计算出曝光组合
-            self.populate_table(ev,iso)
+            self.populate_table(used_ev,iso)
         except ValueError:
             pass
 
