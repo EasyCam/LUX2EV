@@ -27,5 +27,5 @@ python -c "import lux2ev;lux2ev.main()"
 
 ## Usage
 
-Just input the Lux and ISO values, and the software will calculate the shutter speed under different aperture.
+Just input the Lux value and select an ISO, and the software will calculate the shutter speed under different aperture.
 ![](./images/Screenshot.png)
