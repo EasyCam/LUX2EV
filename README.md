@@ -1,4 +1,6 @@
-# LUX2EV
+# LUX2EV PyQt6
+
+## PyQt6 Powered Version
 
 A very easy-to-use small software that uses the lux value measured by the illuminance meter to calculate the shutter speed under different ISO and aperture, and assist photography.
 
