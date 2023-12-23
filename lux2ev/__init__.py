@@ -6,7 +6,7 @@ from PyQt6.QtCore import QSize,QTranslator
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QComboBox, QMainWindow, QDialog,QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, QLineEdit, QPushButton, QTableWidget, QTableWidgetItem
 
-version = '2023.12.23.1'
+version = '2023.12.23.2'
 class ExposureCalculator(QDialog):
     
     def __init__(self, parent=None):
@@ -26,9 +26,8 @@ class ExposureCalculator(QDialog):
         self.iso_select.currentIndexChanged.connect(self.calculate_ev)
         
         self.ev_label = QLabel("EV")
-        self.ev_label_value = QLabel("  ")
         self.ev_label_left = QLabel("Adjust")
-        self.ev_label_right = QLabel("  ")
+        self.ev_label_value = QLabel("  ")
         ev_srt_list=['-5.0','-4.67','-4.5','-4.33','-4.0','-3.67','-3.5','-3.33','-3.0','-2.67','-2.5','-2.33','-2.0','-1.67','-1.5','-1.33','-1.0','-0.67','-0.5','-0.33','+0.0','+0.33','+0.5','+0.67','+1.0','+1.33','+1.5','+1.67','+2.0','+2.33','+2.5','+2.67','+3.0','+3.33','+3.5','+3.67','+4.0','+4.33','+4.5','+4.67','+5.0']
         self.ev_select = QComboBox()
         self.ev_select.addItems([str(iso) for iso in ev_srt_list])
@@ -53,7 +52,6 @@ class ExposureCalculator(QDialog):
         horizontal_layout_box.addWidget(self.ev_label_value)
         horizontal_layout_box.addWidget(self.ev_label_left)
         horizontal_layout_box.addWidget(self.ev_select)
-        horizontal_layout_box.addWidget(self.ev_label_right)
         horizontal_layout_box.addWidget(self.calculate_button)
         vertical_layout_box.addLayout(horizontal_layout_box)
         vertical_layout_box.addWidget(self.exposure_table)
@@ -83,8 +81,7 @@ class ExposureCalculator(QDialog):
             ev = round(ev * 10) / 10
             # 将计算结果更新到文本框中
             self.ev_label_value.setText(str(ev))
-            used_ev = ev + float(self.ev_select.currentText()) 
-            self.ev_label_right.setText(' = '+str(used_ev))
+            used_ev = ev - float(self.ev_select.currentText()) 
             # 调用 populate_table 函数，传入 ev 和 iso 值，计算出曝光组合
             self.populate_table(used_ev,iso)
         except ValueError:
