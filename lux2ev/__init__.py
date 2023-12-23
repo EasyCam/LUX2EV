@@ -6,7 +6,7 @@ from PyQt6.QtCore import QSize,QTranslator
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QComboBox, QMainWindow, QDialog,QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, QLineEdit, QPushButton, QTableWidget, QTableWidgetItem
 
-version = '2023.12.15.3'
+version = '2023.12.23.1'
 class ExposureCalculator(QDialog):
     
     def __init__(self, parent=None):
@@ -18,9 +18,9 @@ class ExposureCalculator(QDialog):
         self.lux_label = QLabel("LUX")
         self.lux_edit = QLineEdit()
         self.iso_label = QLabel("ISO")
-        iso_list = [50,64,100,125,160,200,250,320,400,500,640,800,1000,1250,1600,2000,2500,3200,4000,5000,6400,8000,10000,12500,16000,20000,25000,32000,4000,5000,6400,8000,10000,12800,16000,20000,25600,51200,102400]
+        self.iso_list = [50,64,100,125,160,200,250,320,400,500,640,800,1000,1250,1600,2000,2500,3200,4000,5000,6400,8000,10000,12500,16000,20000,25000,32000,40000,50000,64000,80000,100000,128000,160000,200000,256000,512000,1024000]
         self.iso_select = QComboBox()
-        self.iso_select.addItems([str(iso) for iso in iso_list])
+        self.iso_select.addItems([str(iso) for iso in self.iso_list])
         self.iso_select.setCurrentIndex(0)
         self.iso_label.setBuddy(self.iso_select)
         self.iso_select.currentIndexChanged.connect(self.calculate_ev)
